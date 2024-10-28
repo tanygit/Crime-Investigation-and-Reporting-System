@@ -4,25 +4,109 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <title>Police Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        h3 {
+            color: #2980b9;
+            margin-top: 30px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px; /* Space between table and other elements */
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #2980b9;
+            color: white;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1; /* Highlight row on hover */
+        }
+
+        form {
+            display: inline; /* Keep the form inline */
+        }
+
+        select {
+            padding: 6px; /* Padding for select box */
+            margin-right: 10px; /* Space between select and button */
+        }
+
+        button {
+            background-color: #2980b9;
+            color: white;
+            border: none;
+            cursor: pointer;
+            padding: 6px 12px; /* Padding for the button */
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #1a5276; /* Darker shade on hover */
+        }
+
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            text-decoration: none;
+            color: #2980b9;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
     <h2>Police Dashboard</h2>
     <h3>Pending Complaints</h3>
-    <ul>
-        {% for complaint in complaints %}
-            <li>
-                {{ complaint['description'] }} - Status: {{ complaint['status'] }} 
-                <form method="POST" action="/police/update/{{ complaint['id'] }}">
-                    <select name="status">
-                        <option value="Pending">Pending</option>
-                        <option value="In Progress">In Progress</option>
-                        <option value="Resolved">Resolved</option>
-                    </select>
-                    <button type="submit">Update Status</button>
-                </form>
-            </li>
-        {% endfor %}
-    </ul>
+    <table>
+        <thead>
+            <tr>
+                <th>Description</th>
+                <th>Status</th>
+                <th>Update Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for complaint in complaints %}
+                <tr>
+                    <td>{{ complaint['description'] }}</td>
+                    <td>{{ complaint['status'] }}</td>
+                    <td>
+                        <form method="POST" action="/police/update/{{ complaint['id'] }}">
+                            <select name="status">
+                                <option value="Pending" {% if complaint['status'] == 'Pending' %}selected{% endif %}>Pending</option>
+                                <option value="In Progress" {% if complaint['status'] == 'In Progress' %}selected{% endif %}>In Progress</option>
+                                <option value="Resolved" {% if complaint['status'] == 'Resolved' %}selected{% endif %}>Resolved</option>
+                            </select>
+                            <button type="submit">Update Status</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
     <a href="/police/logout">Logout</a>
 </body>
 </html>

@@ -4,18 +4,105 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <title>Citizen Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        h3 {
+            color: #2980b9;
+            margin-top: 30px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px; /* Space between table and other elements */
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #2980b9;
+            color: white;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1; /* Highlight row on hover */
+        }
+
+        form {
+            margin-top: 20px; /* Space above the form */
+        }
+
+        input, textarea, button {
+            display: block; /* Each element on a new line */
+            margin: 10px 0; /* Space between elements */
+            width: 100%; /* Full width */
+            padding: 10px; /* Padding for better usability */
+        }
+
+        button {
+            background-color: #2980b9;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #1a5276; /* Darker shade on hover */
+        }
+
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            text-decoration: none;
+            color: #2980b9;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
     <h2>Welcome, {{ citizen['name'] }}</h2>
+    
     <h3>Your Complaints</h3>
-    <ul>
-        {% for complaint in complaints %}
-            <li>
-                {{ complaint['description'] }} - Status: {{ complaint['status'] }} 
-                <a href="/complaint/status/{{ complaint['id'] }}">View Status</a>
-            </li>
-        {% endfor %}
-    </ul>
+    <table>
+        <thead>
+            <tr>
+                <th>Description</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for complaint in complaints %}
+                <tr>
+                    <td>{{ complaint['description'] }}</td>
+                    <td>{{ complaint['status'] }}</td>
+                    <td>
+                        <a href="/complaint/status/{{ complaint['id'] }}">View Status</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
     <h3>File a New Complaint</h3>
     <form method="POST" action="/citizen/complaint" enctype="multipart/form-data">
         <input type="text" name="mobile" placeholder="Mobile Number" required>

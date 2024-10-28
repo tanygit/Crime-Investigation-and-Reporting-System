@@ -4,14 +4,77 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <title>Complaint Status</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px; /* Space between table and other elements */
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #2980b9;
+            color: white;
+        }
+
+        img {
+            max-width: 300px; /* Maximum width for the image */
+            margin-top: 20px; /* Space above the image */
+            border-radius: 5px; /* Rounded corners */
+        }
+
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            text-decoration: none;
+            color: #2980b9;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
     <h2>Complaint Status</h2>
-    <p>Description: {{ complaint['description'] }}</p>
-    <p>Status: {{ complaint['status'] }}</p>
-    {% if complaint['image'] %}
-        <img src="{{ url_for('static', filename='uploads/' + complaint['image']) }}" alt="Complaint Image" style="max-width: 300px;">
-    {% endif %}
+    <table>
+        <tbody>
+            <tr>
+                <th>Description</th>
+                <td>{{ complaint['description'] }}</td>
+            </tr>
+            <tr>
+                <th>Status</th>
+                <td>{{ complaint['status'] }}</td>
+            </tr>
+            {% if complaint['image'] %}
+            <tr>
+                <th>Complaint Image</th>
+                <td>
+                    <img src="{{ url_for('static', filename='uploads/' + complaint['image']) }}" alt="Complaint Image">
+                </td>
+            </tr>
+            {% endif %}
+        </tbody>
+    </table>
+
     <a href="/citizen/dashboard">Back to Dashboard</a>
 </body>
 </html>

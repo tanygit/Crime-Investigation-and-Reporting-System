@@ -2,19 +2,87 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <title>Crime Report Management</title>
+    <title>Crime Report Management System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            text-align: center; /* Center text and image */
+        }
+
+        .navbar {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 14px 20px;
+            display: inline-block;
+        }
+
+        .navbar a:hover {
+            background-color: #575757;
+        }
+
+        h2 {
+            font-size: 2.5em; /* Larger font size */
+            color: #2c3e50; /* Darker color for the heading */
+            margin: 20px 0; /* Margin for spacing */
+            padding: 10px; /* Padding for better spacing */
+            transition: all 0.3s ease; /* Smooth transition for hover effect */
+        }
+
+        h2:hover {
+            color: #2980b9; /* Change color on hover */
+            transform: scale(1.05); /* Slightly enlarge on hover */
+        }
+
+        img {
+            width: 600px; /* Fixed width */
+            height: 400px; /* Fixed height */
+            border-radius: 5px; /* Rounded corners */
+            margin: 20px 0; /* Margin for spacing */
+        }
+
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #333;
+            color: white;
+            position: relative; /* Relative positioning */
+            width: 100%; /* Full width */
+            bottom: 0; /* Aligns footer at the bottom of the page */
+        }
+    </style>
 </head>
 <body>
-    <nav>
-        <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/citizen/login">Citizen Login</a></li>
-            <li><a href="/citizen/register">Citizen Register</a></li>
-            <li><a href="/police/login">Police Login</a></li>
-        </ul>
-    </nav>
-    <h1>Welcome to Crime Report Management System</h1>
+    <div class="navbar">
+        <a href="/">Home</a>
+        <a href="/citizen/register">Citizen Register</a>
+        <a href="/citizen/login">Citizen Login</a>
+        <a href="/police/register">Police Register</a>
+        <a href="/police/login">Police Login</a>
+    </div>
+
+    <h2>Welcome to the Crime Report Management System</h2>
+    <!-- Using the uploaded image -->
+    <img src="{{ url_for('static', filename='uploads/crime.jpg')}}" alt="Crime Management">
+    
+    <p>
+        This system allows citizens to report crimes and track their complaints while enabling police personnel to manage and respond to these reports efficiently.
+    </p>
+    <p>
+        Please register or log in to get started.
+    </p>
+
+    <footer>
+        <p>Made with &hearts; by DBMS Team</p>
+    </footer>
 </body>
 </html>
