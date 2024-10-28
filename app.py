@@ -107,6 +107,27 @@ def citizen_logout():
     session.pop('citizen_id', None)
     return redirect(url_for('home'))
 
+@app.route('/police/register', methods=['GET', 'POST'])
+def police_register():
+    if request.method == 'POST':
+        name = request.form['name']
+        mobile = request.form['mobile']
+        password = request.form['password']
+
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        try:
+            cursor.execute('INSERT INTO police (name, mobile, password) VALUES (?, ?, ?)', 
+                           (name, mobile, password))
+            conn.commit()
+            return redirect(url_for('police_login'))
+        except sqlite3.IntegrityError:
+            return "Mobile number already registered!"
+        finally:
+            conn.close()
+    return render_template('police_register.html')
+
+
 @app.route('/police/login', methods=['GET', 'POST'])
 def police_login():
     if request.method == 'POST':
@@ -153,6 +174,13 @@ def police_update(complaint_id):
     conn.close()
     
     return redirect(url_for('police_dashboard'))
+
+@app.route('/police/logout')
+def police_logout():
+    # Remove police session data
+    session.pop('police_id', None)
+    session.pop('police_mobile', None)
+    return redirect(url_for('home'))
 
 @app.route('/complaint/status/<int:complaint_id>')
 def complaint_status(complaint_id):
