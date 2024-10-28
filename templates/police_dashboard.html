@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Police Dashboard</title>
+</head>
+<body>
+    <h2>Police Dashboard</h2>
+    <h3>Pending Complaints</h3>
+    <ul>
+        {% for complaint in complaints %}
+            <li>
+                {{ complaint['description'] }} - Status: {{ complaint['status'] }} 
+                <form method="POST" action="/police/update/{{ complaint['id'] }}">
+                    <select name="status">
+                        <option value="Pending">Pending</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Resolved">Resolved</option>
+                    </select>
+                    <button type="submit">Update Status</button>
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+    <a href="/police/logout">Logout</a>
+</body>
+</html>

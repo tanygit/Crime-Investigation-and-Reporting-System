@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Citizen Dashboard</title>
+</head>
+<body>
+    <h2>Welcome, {{ citizen['name'] }}</h2>
+    <h3>Your Complaints</h3>
+    <ul>
+        {% for complaint in complaints %}
+            <li>
+                {{ complaint['description'] }} - Status: {{ complaint['status'] }} 
+                <a href="/complaint/status/{{ complaint['id'] }}">View Status</a>
+            </li>
+        {% endfor %}
+    </ul>
+    <h3>File a New Complaint</h3>
+    <form method="POST" action="/citizen/complaint" enctype="multipart/form-data">
+        <input type="text" name="mobile" placeholder="Mobile Number" required>
+        <input type="text" name="location" placeholder="Location" required>
+        <input type="text" name="crime_type" placeholder="Crime Type" required>
+        <input type="text" name="station" placeholder="Police Station" required>
+        <textarea name="description" placeholder="Description" required></textarea>
+        <input type="file" name="image" accept="image/*">
+        <button type="submit">Submit Complaint</button>
+    </form>
+    <a href="/citizen/logout">Logout</a>
+</body>
+</html>

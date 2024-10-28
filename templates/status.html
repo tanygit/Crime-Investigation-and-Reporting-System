@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Complaint Status</title>
+</head>
+<body>
+    <h2>Complaint Status</h2>
+    <p>Description: {{ complaint['description'] }}</p>
+    <p>Status: {{ complaint['status'] }}</p>
+    {% if complaint['image'] %}
+        <img src="{{ url_for('static', filename='uploads/' + complaint['image']) }}" alt="Complaint Image" style="max-width: 300px;">
+    {% endif %}
+    <a href="/citizen/dashboard">Back to Dashboard</a>
+</body>
+</html>
