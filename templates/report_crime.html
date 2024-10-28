@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>Report a Crime</h2>
+    <form method="POST">
+        <label>Case Number:</label>
+        <input type="text" name="case_number" required><br>
+        <label>Description:</label>
+        <textarea name="description" rows="4" required></textarea><br>
+        <button type="submit">Submit Report</button>
+    </form>
+</div>
+{% endblock %}
