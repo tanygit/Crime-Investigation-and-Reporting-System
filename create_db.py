@@ -1,48 +1,44 @@
 import sqlite3
 
-def create_database():
-    conn = sqlite3.connect('database.db')
-    cursor = conn.cursor()
+def create_db():
+    connection = sqlite3.connect('database.db')
+    cursor = connection.cursor()
 
     # Create citizens table
     cursor.execute('''
-    CREATE TABLE IF NOT EXISTS citizens (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT,
-        mobile TEXT UNIQUE,
-        password TEXT
-    )
+        CREATE TABLE IF NOT EXISTS citizens (
+            id INTEGER PRIMARY KEY,
+            name TEXT NOT NULL,
+            mobile TEXT UNIQUE NOT NULL,
+            password TEXT NOT NULL
+        )
     ''')
 
     # Create police table
     cursor.execute('''
-    CREATE TABLE IF NOT EXISTS police (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT,
-        mobile TEXT UNIQUE,
-        password TEXT
-    )
+        CREATE TABLE IF NOT EXISTS police (
+            id INTEGER PRIMARY KEY,
+            name TEXT NOT NULL,
+            mobile TEXT UNIQUE NOT NULL,
+            password TEXT NOT NULL,
+            department TEXT NOT NULL
+        )
     ''')
 
     # Create complaints table
     cursor.execute('''
-    CREATE TABLE IF NOT EXISTS complaints (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        citizen_id INTEGER,
-        mobile TEXT,
-        location TEXT,
-        crime_type TEXT,
-        station TEXT,
-        description TEXT,
-        status TEXT,
-        image TEXT,
-        FOREIGN KEY (citizen_id) REFERENCES citizens (id)
-    )
+        CREATE TABLE IF NOT EXISTS complaints (
+            id INTEGER PRIMARY KEY,
+            description TEXT NOT NULL,
+            status TEXT DEFAULT 'Pending',
+            image TEXT,
+            department TEXT NOT NULL,
+            FOREIGN KEY (id) REFERENCES citizens(id)
+        )
     ''')
 
-    conn.commit()
-    conn.close()
-    print("Database and tables created!")
+    connection.commit()
+    connection.close()
 
-if __name__ == "__main__":
-    create_database()
+if __name__ == '__main__':
+    create_db()

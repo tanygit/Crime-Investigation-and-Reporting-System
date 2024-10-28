@@ -103,16 +103,26 @@
         </tbody>
     </table>
     
-    <h3>File a New Complaint</h3>
-    <form method="POST" action="/citizen/complaint" enctype="multipart/form-data">
-        <input type="text" name="mobile" placeholder="Mobile Number" required>
-        <input type="text" name="location" placeholder="Location" required>
-        <input type="text" name="crime_type" placeholder="Crime Type" required>
-        <input type="text" name="station" placeholder="Police Station" required>
-        <textarea name="description" placeholder="Description" required></textarea>
-        <input type="file" name="image" accept="image/*">
-        <button type="submit">Submit Complaint</button>
-    </form>
+
+    <div class="container">
+        <h2>Citizen Dashboard</h2>
+        <form method="POST" action="/citizen/submit_complaint" enctype="multipart/form-data">
+            <input type="text" name="mobile" placeholder="Mobile Number" required>
+            <input type="text" name="location" placeholder="Location" required>
+            <input type="text" name="crime_type" placeholder="Crime Type" required>
+            <input type="text" name="description" placeholder="Description" required>
+            <select name="department" required>
+                <option value="">Select Department</option>
+                <option value="Police">Police</option>
+                <option value="Fire">Fire</option>
+                <option value="Medical">Medical</option>
+                <!-- Add other departments as needed -->
+            </select>
+            <input type="file" name="image">
+            <button type="submit">File Complaint</button>
+        </form>
+        <!-- Other dashboard content... -->
+    </div>
     <a href="/citizen/logout">Logout</a>
 </body>
 </html>
