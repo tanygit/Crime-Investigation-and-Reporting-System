@@ -37,6 +37,38 @@ def citizen_register():
         finally:
             conn.close()
     return render_template('citizen_register.html')
+@app.route('/citizen/submit_complaint', methods=['POST'])
+def submit_complaint():
+    mobile = request.form['mobile']
+    location = request.form['location']
+    crime_type = request.form['crime_type']
+    description = request.form['description']
+    department = request.form['department']
+    image = request.files['image']
+
+    # Save image if uploaded
+    image_filename = ''
+    if image:
+        image_filename = image.filename
+        image.save(f'static/uploads/{image_filename}')
+
+    # Connect to the database
+    conn = sqlite3.connect('database.db')
+    c = conn.cursor()
+
+    # Insert the complaint into the database
+    c.execute('''
+        INSERT INTO complaints (id, description, status, department, image)
+        VALUES (
+            (SELECT id FROM citizens WHERE mobile = ?),
+            ?, 'Pending', ?, ?
+        )
+    ''', (mobile, description, department, image_filename))
+
+    conn.commit()
+    conn.close()
+
+    return redirect(url_for('citizen_dashboard'))
 
 @app.route('/citizen/login', methods=['GET', 'POST'])
 def citizen_login():
@@ -51,7 +83,7 @@ def citizen_login():
         conn.close()
         
         if citizen:
-            session['citizen_id'] = citizen['id']
+            session['id'] = citizen['id']
             return redirect(url_for('citizen_dashboard'))
         else:
             return "Invalid mobile or password!"
@@ -59,15 +91,15 @@ def citizen_login():
 
 @app.route('/citizen/dashboard')
 def citizen_dashboard():
-    if 'citizen_id' not in session:
+    if 'id' not in session:
         return redirect(url_for('citizen_login'))
 
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute('SELECT * FROM citizens WHERE id = ?', (session['citizen_id'],))
+    cursor.execute('SELECT * FROM citizens WHERE id = ?', (session['id'],))
     citizen = cursor.fetchone()
     
-    cursor.execute('SELECT * FROM complaints WHERE citizen_id = ?', (citizen['id'],))
+    cursor.execute('SELECT * FROM complaints WHERE id = ?', (citizen['id'],))
     complaints = cursor.fetchall()
     conn.close()
 
@@ -75,7 +107,7 @@ def citizen_dashboard():
 
 @app.route('/citizen/complaint', methods=['GET', 'POST'])
 def citizen_complaint():
-    if 'citizen_id' not in session:
+    if 'id' not in session:
         return redirect(url_for('citizen_login'))
 
     if request.method == 'POST':
@@ -94,8 +126,8 @@ def citizen_complaint():
 
         conn = get_db_connection()
         cursor = conn.cursor()
-        cursor.execute('INSERT INTO complaints (citizen_id, mobile, location, crime_type, station, description, status, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-                       (session['citizen_id'], mobile, location, crime_type, station, description, 'Pending', image_filename))
+        cursor.execute('INSERT INTO complaints (id, mobile, location, crime_type, station, description, status, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                       (session['id'], mobile, location, crime_type, station, description, 'Pending', image_filename))
         conn.commit()
         conn.close()
         
@@ -104,7 +136,7 @@ def citizen_complaint():
 
 @app.route('/citizen/logout')
 def citizen_logout():
-    session.pop('citizen_id', None)
+    session.pop('id', None)
     return redirect(url_for('home'))
 
 @app.route('/police/register', methods=['GET', 'POST'])
@@ -113,12 +145,13 @@ def police_register():
         name = request.form['name']
         mobile = request.form['mobile']
         password = request.form['password']
+        department=request.form['department']
 
         conn = get_db_connection()
         cursor = conn.cursor()
         try:
-            cursor.execute('INSERT INTO police (name, mobile, password) VALUES (?, ?, ?)', 
-                           (name, mobile, password))
+            cursor.execute('INSERT INTO police (name, mobile, password,department) VALUES (?, ?, ?,?)', 
+                           (name, mobile, password,department))
             conn.commit()
             return redirect(url_for('police_login'))
         except sqlite3.IntegrityError:
@@ -147,17 +180,21 @@ def police_login():
             return "Invalid mobile or password!"
     return render_template('police_login.html')
 
+# Route for the police dashboard
 @app.route('/police/dashboard')
 def police_dashboard():
     if 'police_id' not in session:
         return redirect(url_for('police_login'))
 
+    department = session.get('department')  # Get department from session
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute('SELECT * FROM complaints')
-    complaints = cursor.fetchall()
-    conn.close()
 
+    # Retrieve complaints for the specific department
+    cursor.execute('SELECT * FROM complaints WHERE department = ?', (department,))
+    complaints = cursor.fetchall()
+    
+    conn.close()
     return render_template('police_dashboard.html', complaints=complaints)
 
 @app.route('/police/update/<int:complaint_id>', methods=['POST'])
@@ -184,7 +221,7 @@ def police_logout():
 
 @app.route('/complaint/status/<int:complaint_id>')
 def complaint_status(complaint_id):
-    if 'citizen_id' not in session:
+    if 'id' not in session:
         return redirect(url_for('citizen_login'))
 
     conn = get_db_connection()

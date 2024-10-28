@@ -25,7 +25,7 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 30px; /* Space between table and other elements */
+            margin-bottom: 30px;
         }
 
         th, td {
@@ -40,16 +40,16 @@
         }
 
         tr:hover {
-            background-color: #f1f1f1; /* Highlight row on hover */
+            background-color: #f1f1f1;
         }
 
         form {
-            display: inline; /* Keep the form inline */
+            display: inline;
         }
 
         select {
-            padding: 6px; /* Padding for select box */
-            margin-right: 10px; /* Space between select and button */
+            padding: 6px;
+            margin-right: 10px;
         }
 
         button {
@@ -57,12 +57,12 @@
             color: white;
             border: none;
             cursor: pointer;
-            padding: 6px 12px; /* Padding for the button */
+            padding: 6px 12px;
             transition: background-color 0.3s;
         }
 
         button:hover {
-            background-color: #1a5276; /* Darker shade on hover */
+            background-color: #1a5276;
         }
 
         a {
@@ -78,35 +78,51 @@
     </style>
 </head>
 <body>
-    <h2>Police Dashboard</h2>
-    <h3>Pending Complaints</h3>
-    <table>
-        <thead>
-            <tr>
-                <th>Description</th>
-                <th>Status</th>
-                <th>Update Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for complaint in complaints %}
+    <h1>Police Dashboard</h1>
+    <h2>Department: {{ session['department'] }}</h2>
+    <a href="{{ url_for('police_logout') }}">Logout</a>
+
+    <h3>Complaints in Your Department</h3>
+    {% if complaints %}
+        <table>
+            <thead>
                 <tr>
-                    <td>{{ complaint['description'] }}</td>
-                    <td>{{ complaint['status'] }}</td>
-                    <td>
-                        <form method="POST" action="/police/update/{{ complaint['id'] }}">
-                            <select name="status">
-                                <option value="Pending" {% if complaint['status'] == 'Pending' %}selected{% endif %}>Pending</option>
-                                <option value="In Progress" {% if complaint['status'] == 'In Progress' %}selected{% endif %}>In Progress</option>
-                                <option value="Resolved" {% if complaint['status'] == 'Resolved' %}selected{% endif %}>Resolved</option>
-                            </select>
-                            <button type="submit">Update Status</button>
-                        </form>
-                    </td>
+                    <th>ID</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                    <th>Image</th>
+                    <th>Update Status</th>
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <a href="/police/logout">Logout</a>
+            </thead>
+            <tbody>
+                {% for complaint in complaints %}
+                    <tr>
+                        <td>{{ complaint['id'] }}</td>
+                        <td>{{ complaint['description'] }}</td>
+                        <td>{{ complaint['status'] }}</td>
+                        <td>
+                            {% if complaint['image'] %}
+                                <img src="{{ url_for('static', filename='uploads/' ~ complaint['image']) }}" alt="Complaint Image" width="100">
+                            {% else %}
+                                No Image
+                            {% endif %}
+                        </td>
+                        <td>
+                            <form action="{{ url_for('police_update', complaint_id=complaint['id']) }}" method="POST">
+                                <select name="status">
+                                    <option value="Pending" {% if complaint['status'] == 'Pending' %}selected{% endif %}>Pending</option>
+                                    <option value="In Progress" {% if complaint['status'] == 'In Progress' %}selected{% endif %}>In Progress</option>
+                                    <option value="Resolved" {% if complaint['status'] == 'Resolved' %}selected{% endif %}>Resolved</option>
+                                </select>
+                                <button type="submit">Update</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No complaints found for your department.</p>
+    {% endif %}
 </body>
 </html>
