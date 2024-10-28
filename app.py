@@ -175,6 +175,7 @@ def police_login():
 
         if police:
             session['police_id'] = police['id']
+            session['department'] = police['department']
             return redirect(url_for('police_dashboard'))
         else:
             return "Invalid mobile or password!"
