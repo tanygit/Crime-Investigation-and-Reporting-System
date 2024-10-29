@@ -29,11 +29,12 @@ def create_db():
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS complaints (
             id INTEGER PRIMARY KEY,
+            citizen_id INTEGER NOT NULL,
             description TEXT NOT NULL,
             status TEXT DEFAULT 'Pending',
             image TEXT,
             department TEXT NOT NULL,
-            FOREIGN KEY (id) REFERENCES citizens(id)
+            FOREIGN KEY (citizen_id) REFERENCES citizens(id)
         )
     ''')
 
