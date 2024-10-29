@@ -37,9 +37,13 @@ def citizen_register():
         finally:
             conn.close()
     return render_template('citizen_register.html')
+
 @app.route('/citizen/submit_complaint', methods=['POST'])
 def submit_complaint():
-    mobile = request.form['mobile']
+    if 'id' not in session:  # Check if the citizen is logged in
+        return redirect(url_for('citizen_login'))
+
+    citizen_id = session['id']  # Retrieve citizen ID from session
     location = request.form['location']
     crime_type = request.form['crime_type']
     description = request.form['description']
@@ -49,26 +53,24 @@ def submit_complaint():
     # Save image if uploaded
     image_filename = ''
     if image:
-        image_filename = image.filename
-        image.save(f'static/uploads/{image_filename}')
+        image_filename = secure_filename(image.filename)
+        image.save(os.path.join(app.config['UPLOAD_FOLDER'], image_filename))
 
     # Connect to the database
-    conn = sqlite3.connect('database.db')
-    c = conn.cursor()
+    conn = get_db_connection()
+    cursor = conn.cursor()
 
-    # Insert the complaint into the database
-    c.execute('''
-        INSERT INTO complaints (id, description, status, department, image)
-        VALUES (
-            (SELECT id FROM citizens WHERE mobile = ?),
-            ?, 'Pending', ?, ?
-        )
-    ''', (mobile, description, department, image_filename))
+    # Insert the complaint into the database, including citizen_id
+    cursor.execute('''
+        INSERT INTO complaints (citizen_id, description, status, department, image)
+        VALUES (?, ?, 'Pending', ?, ?)
+    ''', (citizen_id, description, department, image_filename))
 
     conn.commit()
     conn.close()
 
     return redirect(url_for('citizen_dashboard'))
+
 
 @app.route('/citizen/login', methods=['GET', 'POST'])
 def citizen_login():
@@ -99,7 +101,7 @@ def citizen_dashboard():
     cursor.execute('SELECT * FROM citizens WHERE id = ?', (session['id'],))
     citizen = cursor.fetchone()
     
-    cursor.execute('SELECT * FROM complaints WHERE id = ?', (citizen['id'],))
+    cursor.execute('SELECT * FROM complaints WHERE citizen_id = ?', (citizen['id'],))
     complaints = cursor.fetchall()
     conn.close()
 
@@ -111,28 +113,31 @@ def citizen_complaint():
         return redirect(url_for('citizen_login'))
 
     if request.method == 'POST':
-        mobile = request.form['mobile']
+        citizen_id = session['id']  # Retrieve citizen ID from session
         location = request.form['location']
         crime_type = request.form['crime_type']
         station = request.form['station']
         description = request.form['description']
         image = request.files['image']
         
+        image_filename = None
         if image:
             image_filename = secure_filename(image.filename)
             image.save(os.path.join(app.config['UPLOAD_FOLDER'], image_filename))
-        else:
-            image_filename = None
 
         conn = get_db_connection()
         cursor = conn.cursor()
-        cursor.execute('INSERT INTO complaints (id, mobile, location, crime_type, station, description, status, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-                       (session['id'], mobile, location, crime_type, station, description, 'Pending', image_filename))
+        cursor.execute('''
+            INSERT INTO complaints (citizen_id, location, crime_type, station, description, status, image)
+            VALUES (?, ?, ?, ?, ?, 'Pending', ?)
+        ''', (citizen_id, location, crime_type, station, description, image_filename))
+        
         conn.commit()
         conn.close()
         
         return redirect(url_for('citizen_dashboard'))
     return render_template('citizen_complaint.html')
+
 
 @app.route('/citizen/logout')
 def citizen_logout():
@@ -150,8 +155,7 @@ def police_register():
         conn = get_db_connection()
         cursor = conn.cursor()
         try:
-            cursor.execute('INSERT INTO police (name, mobile, password,department) VALUES (?, ?, ?,?)', 
-                           (name, mobile, password,department))
+            cursor.execute('INSERT INTO police (name, mobile, password,department) VALUES (?, ?, ?,?)', (name, mobile, password,department))
             conn.commit()
             return redirect(url_for('police_login'))
         except sqlite3.IntegrityError:
