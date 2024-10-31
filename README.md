@@ -1,9 +1,16 @@
-Crime Ivestigation and Reporting System
+ # Crime Ivestigation and Reporting System
 
->Current status of the project
- -created a base template with the basic functionality 
- -added a crime investigation and reporting system with the following features:
-   -users can register and login
-   -citizen login and police staff loging
-   -users can report crimes
-   -police staff can view and manage reported crimes
+## Citizen Portal
+- Register & Login: Citizens can create an account and securely log in.
+- Dashboard: View all filed complaints and their statuses.
+- File a Complaint: Submit complaints with:
+   * Location and Description.
+   * Department Assignment based on crime type (e.g., Crime, Fire, Medical).
+   * Optional Image Upload for additional context.
+   * Track Complaint Status: Monitor real-time updates.
+ 
+## Department Portal (Police)
+- Register & Login: Officers register with their department and securely log in.
+- Dashboard: View complaints specific to their department.
+- Update Complaint Status: Change complaint status (e.g., Pending, In Progress, Resolved).
+
