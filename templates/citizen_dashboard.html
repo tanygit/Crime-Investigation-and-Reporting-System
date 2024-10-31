@@ -5,55 +5,47 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <title>Citizen Dashboard</title>
     <style>
+        /* Your existing styles */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 20px;
             background-color: #f4f4f4;
         }
-
         h2 {
             color: #2c3e50;
             margin-bottom: 20px;
         }
-
         h3 {
             color: #2980b9;
             margin-top: 30px;
         }
-
         table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 30px; /* Space between table and other elements */
         }
-
         th, td {
             border: 1px solid #ddd;
             padding: 8px;
             text-align: left;
         }
-
         th {
             background-color: #2980b9;
             color: white;
         }
-
         tr:hover {
             background-color: #f1f1f1; /* Highlight row on hover */
         }
-
         form {
             margin-top: 20px; /* Space above the form */
         }
-
-        input, textarea, button {
+        input, textarea, button, select {
             display: block; /* Each element on a new line */
             margin: 10px 0; /* Space between elements */
             width: 100%; /* Full width */
             padding: 10px; /* Padding for better usability */
         }
-
         button {
             background-color: #2980b9;
             color: white;
@@ -61,22 +53,45 @@
             cursor: pointer;
             transition: background-color 0.3s;
         }
-
         button:hover {
             background-color: #1a5276; /* Darker shade on hover */
         }
-
         a {
             display: inline-block;
             margin-top: 20px;
             text-decoration: none;
             color: #2980b9;
         }
-
         a:hover {
             text-decoration: underline;
         }
     </style>
+    <script>
+        // JavaScript function to update department based on crime type
+        function updateDepartment() {
+            const crimeType = document.getElementById("crime_type").value;
+            const departmentDropdown = document.getElementById("department");
+            departmentDropdown.innerHTML = ""; // Clear existing options
+
+            // Define department options based on selected crime type
+            const crimeToDepartment = {
+                "Robbery": "Crime",
+                "Assault": "Crime",
+                "Fire": "Fire",
+                "Medical Emergency": "Medical",
+                "Accident": "Traffic",
+                // Add more mappings as needed
+            };
+
+            if (crimeType in crimeToDepartment) {
+                const department = crimeToDepartment[crimeType];
+                const option = document.createElement("option");
+                option.value = department;
+                option.text = department;
+                departmentDropdown.add(option);
+            }
+        }
+    </script>
 </head>
 <body>
     <h2>Welcome, {{ citizen['name'] }}</h2>
@@ -103,26 +118,34 @@
         </tbody>
     </table>
     
-
     <div class="container">
-        <h2>Citizen Dashboard</h2>
+        <h3>File a Complaint</h3>
         <form method="POST" action="/citizen/submit_complaint" enctype="multipart/form-data">
             <input type="text" name="mobile" placeholder="Mobile Number" required>
             <input type="text" name="location" placeholder="Location" required>
-            <input type="text" name="crime_type" placeholder="Crime Type" required>
-            <input type="text" name="description" placeholder="Description" required>
-            <select name="department" required>
-                <option value="">Select Department</option>
-                <option value="Police">Police</option>
+            
+            <!-- Crime Type Dropdown -->
+            <select id="crime_type" name="crime_type" onchange="updateDepartment()" required>
+                <option value="">Select Crime Type</option>
+                <option value="Robbery">Robbery</option>
+                <option value="Assault">Assault</option>
                 <option value="Fire">Fire</option>
-                <option value="Medical">Medical</option>
-                <!-- Add other departments as needed -->
+                <option value="Medical Emergency">Medical Emergency</option>
+                <option value="Accident">Accident</option>
+                <!-- Add other crime types as needed -->
             </select>
+            
+            <!-- Department Dropdown -->
+            <select id="department" name="department" required>
+                <option value="">Select Department</option>
+            </select>
+            
+            <input type="text" name="description" placeholder="Description" required>
             <input type="file" name="image">
             <button type="submit">File Complaint</button>
         </form>
-        <!-- Other dashboard content... -->
     </div>
+    
     <a href="/citizen/logout">Logout</a>
 </body>
 </html>
