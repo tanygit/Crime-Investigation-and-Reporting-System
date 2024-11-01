@@ -65,6 +65,21 @@
         a:hover {
             text-decoration: underline;
         }
+        /*.profile-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; 
+        }*/
+        
+        .profile-image {
+            width: 150px; /* Set your desired width */
+            height: 150px; /* Set your desired height */
+            border-radius: 50%; /* This makes the image round */
+            object-fit: cover; /* Ensures the image covers the area without distortion */
+            border: 2px solid #ccc; /* Optional: add a border */
+        }
+
     </style>
     <script>
         // JavaScript function to update department based on crime type
@@ -95,6 +110,11 @@
 </head>
 <body>
     <h2>Welcome, {{ citizen['name'] }}</h2>
+    <div class="profile-container">
+        {% if citizen['profile_image'] %}
+            <img src="{{ url_for('static', filename='uploads/' + citizen['profile_image']) }}" alt="Profile Picture" class="profile-image" >
+        {% endif %}
+    </div>
     
     <h3>Your Complaints</h3>
     <table>

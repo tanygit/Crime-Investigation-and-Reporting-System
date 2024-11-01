@@ -75,10 +75,32 @@
         a:hover {
             text-decoration: underline;
         }
+
+        /*.profile-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; 
+        }*/
+
+        .profile-image {
+            width: 150px; /* Set your desired width */
+            height: 150px; /* Set your desired height */
+            border-radius: 50%; /* This makes the image round */
+            object-fit: cover; /* Ensures the image covers the area without distortion */
+            border: 2px solid #ccc; /* Optional: add a border */
+        }
+
     </style>
 </head>
 <body>
     <h1>Police Dashboard</h1>
+    <div class="profile-container">
+        {% if police['profile_image'] %}
+            <img src="{{ url_for('static', filename='uploads/' + police['profile_image']) }}" alt="Profile Picture" class="profile-image">
+        {% endif %}
+    </div>
+    
     <h2>Department: {{ session['department'] }}</h2>
     <a href="{{ url_for('police_logout') }}">Logout</a>
 

@@ -16,7 +16,7 @@
 
     <div class="container">
         <h2>Police Registration</h2>
-        <form method="POST">
+        <form method="POST" enctype="multipart/form-data">
             <input type="text" name="name" placeholder="Name" required>
             <input type="text" name="mobile" placeholder="Mobile Number" required>
             <input type="password" name="password" placeholder="Password" required>
@@ -28,6 +28,7 @@
                 <option value="Traffic">Traffic</option>
                 <!-- Add other departments as needed -->
             </select>
+            <input type="file" name="profile_image" accept="image/*" required> <!-- Add this line -->
             <button type="submit">Register</button>
         </form>
         <p>Already have an account? <a href="/police/login">Login here</a>.</p>
