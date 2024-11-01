@@ -24,12 +24,17 @@ def citizen_register():
         name = request.form['name']
         mobile = request.form['mobile']
         password = request.form['password']
-        
+        profile_image = request.files['profile_image']  # Get the uploaded image
+
         conn = get_db_connection()
         cursor = conn.cursor()
         try:
-            cursor.execute('INSERT INTO citizens (name, mobile, password) VALUES (?, ?, ?)', 
-                           (name, mobile, password))
+            # Save the profile image if uploaded
+            image_filename = secure_filename(profile_image.filename)
+            profile_image.save(os.path.join(app.config['UPLOAD_FOLDER'], image_filename))
+
+            cursor.execute('INSERT INTO citizens (name, mobile, password, profile_image) VALUES (?, ?, ?, ?)', 
+                           (name, mobile, password, image_filename))
             conn.commit()
             return redirect(url_for('citizen_login'))
         except sqlite3.IntegrityError:
@@ -185,22 +190,29 @@ def police_login():
             return "Invalid mobile or password!"
     return render_template('police_login.html')
 
-# Route for the police dashboard
-@app.route('/police/dashboard')
+@app.route('/police/dashboard', methods=['GET'])
 def police_dashboard():
     if 'police_id' not in session:
         return redirect(url_for('police_login'))
 
-    department = session.get('department')  # Get department from session
+    police_id = session['police_id']
+    department = session['department']
+    
     conn = get_db_connection()
     cursor = conn.cursor()
+    
+    # Retrieve police information
+    cursor.execute('SELECT * FROM police WHERE id = ?', (police_id,))
+    police = cursor.fetchone()
 
     # Retrieve complaints for the specific department
     cursor.execute('SELECT * FROM complaints WHERE department = ?', (department,))
     complaints = cursor.fetchall()
-    
+
     conn.close()
-    return render_template('police_dashboard.html', complaints=complaints)
+    
+    return render_template('police_dashboard.html', police=police, complaints=complaints)
+
 
 @app.route('/police/update/<int:complaint_id>', methods=['POST'])
 def police_update(complaint_id):
