@@ -349,6 +349,177 @@ def admin_dashboard():
                            admin_name=admin_name)
 
 
+# Route to delete a complaint
+@app.route('/complaint/delete/<int:complaint_id>', methods=['GET','POST'])
+def delete_complaint(complaint_id):
+    if 'id' not in session and 'police_id' not in session:
+        return redirect(url_for('home'))
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('DELETE FROM complaints WHERE id = ?', (complaint_id,))
+    conn.commit()
+    conn.close()
+    if 'id' in session:
+        return redirect(url_for('citizen_dashboard'))
+    elif 'police_id' in session:
+        return redirect(url_for('police_dashboard'))
+    
+@app.route('/citizen/update_complaint/<int:complaint_id>', methods=['GET', 'POST'])
+def citizen_update_complaint(complaint_id):
+    if 'id' not in session:
+        return redirect(url_for('citizen_login'))
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    # Fetch the complaint to update
+    cursor.execute('SELECT * FROM complaints WHERE id = ?', (complaint_id,))
+    complaint = cursor.fetchone()
+
+    if request.method == 'POST':
+        description = request.form['description']
+        
+        cursor.execute('''
+            UPDATE complaints SET description = ?
+            WHERE id = ?
+        ''', (description,complaint_id))
+
+        conn.commit()
+        conn.close()
+        return redirect(url_for('citizen_dashboard'))
+
+    conn.close()
+    return render_template('citizen_update_complaint.html', complaint=complaint)
+
+def get_citizen(citizen_id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM citizens WHERE id = ?', (citizen_id,))
+    citizen = cursor.fetchone()
+    conn.close()
+    return citizen
+
+def update_citizen(citizen_id, name=None, mobile=None, profile_image=None):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    # Update citizen's information
+    if profile_image:
+        cursor.execute('''
+            UPDATE citizens SET name = ?, mobile = ?, profile_image = ?
+            WHERE id = ?
+        ''', (name, mobile, profile_image, citizen_id))
+    else:
+        cursor.execute('''
+            UPDATE citizens SET name = ?, mobile = ?
+            WHERE id = ?
+        ''', (name, mobile, citizen_id))
+    
+    conn.commit()
+    conn.close()
+
+def delete_citizen(citizen_id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('DELETE FROM citizens WHERE id = ?', (citizen_id,))
+    conn.commit()
+    conn.close()
+
+
+@app.route('/citizen/update_profile', methods=['GET', 'POST'])
+def update_profile():
+    if 'id' not in session:
+        return redirect(url_for('citizen_login'))
+
+    citizen_id = session['id']  # Retrieve citizen ID from session
+    citizen = get_citizen(citizen_id)  # Fetch the citizen's current data
+
+    if request.method == 'POST':
+        new_name = request.form.get('name')
+        new_mobile = request.form.get('mobile')
+
+        # Handle profile image upload
+        profile_image_filename = citizen['profile_image']  # Default to current image
+        if 'profile_image' in request.files:
+            profile_image = request.files['profile_image']
+            if profile_image.filename:  # Only save if a new image is provided
+                profile_image_filename = secure_filename(profile_image.filename)
+                profile_image.save(os.path.join(app.config['UPLOAD_FOLDER'], profile_image_filename))
+        
+        # Update the citizen in the database
+        update_citizen(citizen_id, name=new_name, mobile=new_mobile, profile_image=profile_image_filename)
+        return redirect(url_for('citizen_dashboard'))
+
+    return render_template('update_profile.html', citizen=citizen)
+
+@app.route('/citizen/delete_profile', methods=['GET','POST'])
+def delete_profile():
+    if 'id' not in session:
+        return redirect(url_for('citizen_login'))
+
+    citizen_id = session['id']
+    delete_citizen(citizen_id)  # Call the function to delete the citizen's data from the database
+    session.pop('id', None)  # Clear the session
+    return redirect(url_for('home'))  # Redirect to the homepage or login page after deletion
+
+@app.route('/police/update_profile', methods=['GET', 'POST'])
+def police_update_profile():
+    if 'police_id' not in session:
+        return redirect(url_for('police_login'))
+
+    police_id = session['police_id']
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    # Fetch the police officer's current data
+    cursor.execute('SELECT * FROM police WHERE id = ?', (police_id,))
+    police = cursor.fetchone()
+
+    if request.method == 'POST':
+        new_name = request.form.get('name')
+        new_mobile = request.form.get('mobile')
+        new_department = request.form.get('department')
+
+        # Handle profile image upload
+        profile_image_filename = police['profile_image']  # Default to current image
+        if 'profile_image' in request.files:
+            profile_image = request.files['profile_image']
+            if profile_image.filename:  # Only save if a new image is provided
+                profile_image_filename = secure_filename(profile_image.filename)
+                profile_image.save(os.path.join(app.config['UPLOAD_FOLDER'], profile_image_filename))
+
+        # Update the police officer in the database
+        cursor.execute('''
+            UPDATE police SET name = ?, mobile = ?, department = ?, profile_image = ?
+            WHERE id = ?
+        ''', (new_name, new_mobile, new_department, profile_image_filename, police_id))
+
+        conn.commit()
+        conn.close()
+        return redirect(url_for('police_dashboard'))
+
+    conn.close()
+    return render_template('police_update_profile.html', police=police)
+
+
+@app.route('/police/delete_profile', methods=['POST'])
+def police_delete_profile():
+    if 'police_id' not in session:
+        return redirect(url_for('police_login'))
+
+    police_id = session['police_id']
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    # Delete the police officer from the database
+    cursor.execute('DELETE FROM police WHERE id = ?', (police_id,))
+    conn.commit()
+    conn.close()
+
+    session.pop('police_id', None)  # Clear the session
+    return redirect(url_for('home'))  # Redirect to the homepage after deletion
+
 
 @app.route('/admin/logout')
 def admin_logout():

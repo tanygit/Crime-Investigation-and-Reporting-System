@@ -12,6 +12,10 @@
             background-color: #f4f4f4;
         }
 
+        h1 {
+            text-align: center;
+        }
+
         h2 {
             color: #2c3e50;
             margin-bottom: 20px;
@@ -43,8 +47,11 @@
             background-color: #f1f1f1;
         }
 
+        /* Updated styles for forms to eliminate white space */
         form {
-            display: inline;
+            display: inline; /* Keep forms inline */
+            margin: none; /* Remove default margin */
+            padding: 0; /* Remove default padding */
         }
 
         select {
@@ -52,17 +59,33 @@
             margin-right: 10px;
         }
 
-        button {
-            background-color: #2980b9;
-            color: white;
-            border: none;
-            cursor: pointer;
-            padding: 6px 12px;
-            transition: background-color 0.3s;
+       /* Button Styles */
+       .button {
+            display: inline-block;
+            padding: 6px 12px; /* Padding for button */
+            background-color: #2980b9; /* Background color */
+            color: white; /* Text color */
+            text-decoration: none; /* No underline */
+            border: none; /* No border */
+            margin-right: 10px; /* Space between buttons */
+            text-align: center; /* Center text */
+            border-radius: 4px; /* Rounded corners */
+            cursor: pointer; /* Pointer cursor */
+            font-size: 14px; /* Font size */
+            transition: background-color 0.3s; /* Smooth background transition */
         }
 
-        button:hover {
-            background-color: #1a5276;
+        .button:hover {
+            background-color: #1a5276; /* Darker shade on hover */
+        }
+
+        /* Special styling for delete link */
+        .button.delete {
+            background-color: #e74c3c; /* Red background for delete */
+        }
+
+        .button.delete:hover {
+            background-color: #c0392b; /* Darker red on hover */
         }
 
         a {
@@ -76,13 +99,6 @@
             text-decoration: underline;
         }
 
-        /*.profile-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh; 
-        }*/
-
         .profile-image {
             width: 150px; /* Set your desired width */
             height: 150px; /* Set your desired height */
@@ -91,6 +107,12 @@
             border: 2px solid #ccc; /* Optional: add a border */
         }
 
+        .profile-container {
+            display: flex; /* Use flexbox for horizontal alignment */
+            align-items: center; /* Center align items vertically */
+            gap: 15px; /* Space between the image and welcome message */
+            margin-bottom: 20px; /* Space below the profile container */
+        }
     </style>
 </head>
 <body>
@@ -101,9 +123,17 @@
         {% else %}
             <p>No profile picture available.</p>
         {% endif %}
+    <div class = "profile-actions">
+        <h2>Welcome, {{ police['name'] }}</h2>
+        <h2>Department: {{ session['department'] }}</h2>
+        <div class="button-container">
+            <a href="{{ url_for('police_update_profile') }}" class="button">Update Profile</a>
+            <a href="{{ url_for('police_delete_profile') }}" class="button delete" onclick="return confirm('Are you sure you want to delete your profile? This action cannot be undone.');">Delete Profile</a>
+        </div>
+    </div>
     </div>
     
-    <h2>Department: {{ session['department'] }}</h2>
+
     <a href="{{ url_for('police_logout') }}">Logout</a>
 
     <h3>Complaints in Your Department</h3>
@@ -138,7 +168,10 @@
                                     <option value="In Progress" {% if complaint['status'] == 'In Progress' %}selected{% endif %}>In Progress</option>
                                     <option value="Resolved" {% if complaint['status'] == 'Resolved' %}selected{% endif %}>Resolved</option>
                                 </select>
-                                <button type="submit">Update</button>
+                                <button type="submit" class="button">Update</button>
+                            </form>
+                            <form action="/complaint/delete/{{ complaint['id'] }}" method="POST" style="display:inline;">
+                                <button type="submit" class="button delete" onclick="return confirm('Are you sure you want to delete this complaint?');">Delete</button>
                             </form>
                         </td>
                     </tr>
