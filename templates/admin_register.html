@@ -15,15 +15,15 @@
         <a href="/admin/register">Admin Register</a>
         <a href="/admin/login">Admin Login</a>
     </div>
+
     <div class="container">
-        <h2>Citizen Registration</h2>
-        <form action="{{ url_for('citizen_register') }}" method="POST" enctype="multipart/form-data">
-            <input type="text" name="name" placeholder="Name" required>
-            <input type="text" name="mobile" placeholder="Mobile Number" required>
+        <h2>Admin Registration</h2>
+        <form method="POST">
+            <input type="text" name="username" placeholder="Username" required>
             <input type="password" name="password" placeholder="Password" required>
-            <input type="file" name="profile_image" accept="image/*" required>
             <button type="submit">Register</button>
         </form>
+        
         <p>Already have an account? <a href="/citizen/login">Login here</a>.</p>
     </div>
 

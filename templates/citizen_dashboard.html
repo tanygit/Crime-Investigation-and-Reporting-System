@@ -113,6 +113,8 @@
     <div class="profile-container">
         {% if citizen['profile_image'] %}
             <img src="{{ url_for('static', filename='uploads/' + citizen['profile_image']) }}" alt="Profile Picture" class="profile-image" >
+        {% else %}
+            <p>No profile picture available.</p>
         {% endif %}
     </div>
     

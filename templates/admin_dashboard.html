@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Citizen Dashboard</title>
+    <style>
+        /* Your existing styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        h3 {
+            color: #2980b9;
+            margin-top: 30px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px; /* Space between table and other elements */
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #2980b9;
+            color: white;
+        }
+        tr:hover {
+            background-color: #f1f1f1; /* Highlight row on hover */
+        }
+        form {
+            margin-top: 20px; /* Space above the form */
+        }
+        input, textarea, button, select {
+            display: block; /* Each element on a new line */
+            margin: 10px 0; /* Space between elements */
+            width: 100%; /* Full width */
+            padding: 10px; /* Padding for better usability */
+        }
+        button {
+            background-color: #2980b9;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #1a5276; /* Darker shade on hover */
+        }
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            text-decoration: none;
+            color: #2980b9;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        /*.profile-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; 
+        }*/
+        
+        .profile-image {
+            width: 150px; /* Set your desired width */
+            height: 150px; /* Set your desired height */
+            border-radius: 50%; /* This makes the image round */
+            object-fit: cover; /* Ensures the image covers the area without distortion */
+            border: 2px solid #ccc; /* Optional: add a border */
+        }
+
+    </style>
+</head>
+<body>
+    <h2>Welcome, {{ admin_name }}</h2>
+
+<h2>Case Counts by Department</h2>
+<table>
+    <tr>
+        <th>Department</th>
+        <th>Count</th>
+    </tr>
+    {% for department, count in case_counts %}
+    <tr>
+        <td>{{ department }}</td>
+        <td>{{ count }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<h2>Status Counts</h2>
+<table>
+    <tr>
+        <th>Status</th>
+        <th>Count</th>
+    </tr>
+    {% for status, count in status_counts %}
+    <tr>
+        <td>{{ status }}</td>
+        <td>{{ count }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+    
+    
+    
+<a href="{{ url_for('admin_logout') }}">Logout</a>
+
+</body>
+</html>
