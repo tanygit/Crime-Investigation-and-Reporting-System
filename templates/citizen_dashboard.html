@@ -35,7 +35,7 @@
             color: white;
         }
         tr:hover {
-            background-color: #f1f1f1; /* Highlight row on hover */
+           background-color: #f1f1f1; /* Highlight row on hover */
         }
         form {
             margin-top: 20px; /* Space above the form */
@@ -46,32 +46,43 @@
             width: 100%; /* Full width */
             padding: 10px; /* Padding for better usability */
         }
-        button {
-            background-color: #2980b9;
-            color: white;
-            border: none;
-            cursor: pointer;
-            transition: background-color 0.3s;
+
+        /* Button Styles */
+        .button {
+            display: inline-block;
+            padding: 6px 12px; /* Padding for button */
+            background-color: #2980b9; /* Background color */
+            color: white; /* Text color */
+            text-decoration: none; /* No underline */
+            border: none; /* No border */
+            margin-right: 10px; /* Space between buttons */
+            text-align: center; /* Center text */
+            border-radius: 4px; /* Rounded corners */
+            cursor: pointer; /* Pointer cursor */
+            font-size: 14px; /* Font size */
+            transition: background-color 0.3s; /* Smooth background transition */
         }
-        button:hover {
+
+        .button:hover {
             background-color: #1a5276; /* Darker shade on hover */
         }
-        a {
-            display: inline-block;
-            margin-top: 20px;
-            text-decoration: none;
-            color: #2980b9;
+
+        /* Special styling for delete link */
+        .button.delete {
+            background-color: #e74c3c; /* Red background for delete */
         }
-        a:hover {
-            text-decoration: underline;
+
+        .button.delete:hover {
+            background-color: #c0392b; /* Darker red on hover */
         }
-        /*.profile-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh; 
-        }*/
-        
+
+        .profile-container {
+            display: flex; /* Use flexbox for horizontal alignment */
+            align-items: center; /* Center align items vertically */
+            gap: 15px; /* Space between the image and welcome message */
+            margin-bottom: 20px; /* Space below the profile container */
+        }
+
         .profile-image {
             width: 150px; /* Set your desired width */
             height: 150px; /* Set your desired height */
@@ -80,6 +91,16 @@
             border: 2px solid #ccc; /* Optional: add a border */
         }
 
+        /* Flexbox for button container */
+        .button-container {
+            display: flex; /* Use flexbox */
+            align-items: center; /* Center align items */
+            gap: 10px; /* Space between buttons */
+        }
+
+        h1 {
+            text-align: center;
+        }
     </style>
     <script>
         // JavaScript function to update department based on crime type
@@ -109,15 +130,25 @@
     </script>
 </head>
 <body>
-    <h2>Welcome, {{ citizen['name'] }}</h2>
+    <h1>Citizen Dashboard</h1>
     <div class="profile-container">
         {% if citizen['profile_image'] %}
-            <img src="{{ url_for('static', filename='uploads/' + citizen['profile_image']) }}" alt="Profile Picture" class="profile-image" >
+            <img src="{{ url_for('static', filename='uploads/' + citizen['profile_image']) }}" alt="Profile Picture" class="profile-image">
         {% else %}
             <p>No profile picture available.</p>
         {% endif %}
+        
+        <!-- Profile Actions moved here -->
+    <div class="profile-actions">
+        <h2>Welcome, {{ citizen['name'] }}</h2> <!-- Moved next to image -->
+        <div class="button-container">
+            <a href="/citizen/update_profile" class="button">Update Profile</a>
+            <a href="/citizen/delete_profile" class="button delete" onclick="return confirm('Are you sure you want to delete your profile? This action cannot be undone.');">Delete Profile</a>
+        </div>
     </div>
-    
+    </div>
+
+
     <h3>Your Complaints</h3>
     <table>
         <thead>
@@ -133,7 +164,11 @@
                     <td>{{ complaint['description'] }}</td>
                     <td>{{ complaint['status'] }}</td>
                     <td>
-                        <a href="/complaint/status/{{ complaint['id'] }}">View Status</a>
+                        <div class="button-container">
+                            <a href="/complaint/status/{{ complaint['id'] }}" class="button">View Status</a>
+                            <a href="/citizen/update_complaint/{{ complaint['id'] }}" class="button">Update</a>
+                            <a href="/complaint/delete/{{ complaint['id'] }}" class="button delete" onclick="return confirm('Are you sure you want to delete this complaint?');">Delete</a>
+                        </div>
                     </td>
                 </tr>
             {% endfor %}
@@ -164,10 +199,10 @@
             
             <input type="text" name="description" placeholder="Description" required>
             <input type="file" name="image">
-            <button type="submit">File Complaint</button>
+            <button type="submit" class="button">File Complaint</button>
         </form>
     </div>
-    
-    <a href="/citizen/logout">Logout</a>
+
+    <a href="/citizen/logout" class="button" style="width: auto;">Logout</a> <!-- Added class for consistency -->
 </body>
 </html>

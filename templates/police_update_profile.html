@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Update Profile</title>
+</head>
+<body>
+    <h1>Update Profile</h1>
+    <form action="{{ url_for('police_update_profile') }}" method="POST" enctype="multipart/form-data">
+        <label for="name">Name:</label>
+        <input type="text" name="name" value="{{ police['name'] }}" required><br>
+        
+        <label for="mobile">Mobile:</label>
+        <input type="text" name="mobile" value="{{ police['mobile'] }}" required><br>
+
+        <label for="department">Department:</label>
+        <input type="text" name="department" value="{{ police['department'] }}" required><br>
+
+        <label for="profile_image">Profile Image:</label>
+        <input type="file" name="profile_image"><br>
+
+        <button type="submit">Update Profile</button>
+    </form>
+    <a href="{{ url_for('police_dashboard') }}">Back to Dashboard</a>
+</body>
+</html>
