@@ -6,6 +6,8 @@ from werkzeug.utils import secure_filename  # Add this line
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
+app.config['DEBUG'] = True  # Enable debug mode
+
 
 # Database connection function
 def get_db_connection():
@@ -149,25 +151,36 @@ def citizen_logout():
     session.pop('id', None)
     return redirect(url_for('home'))
 
+
+
 @app.route('/police/register', methods=['GET', 'POST'])
 def police_register():
     if request.method == 'POST':
         name = request.form['name']
         mobile = request.form['mobile']
         password = request.form['password']
-        department=request.form['department']
+        department = request.form['department']
 
+        # Handle profile image upload
+        profile_image = request.files['profile_image']
+        if profile_image:
+            image_filename = secure_filename(profile_image.filename)
+            profile_image.save(os.path.join('static/uploads', image_filename))
+
+        # Save the police officer to the database
         conn = get_db_connection()
         cursor = conn.cursor()
-        try:
-            cursor.execute('INSERT INTO police (name, mobile, password,department) VALUES (?, ?, ?,?)', (name, mobile, password,department))
-            conn.commit()
-            return redirect(url_for('police_login'))
-        except sqlite3.IntegrityError:
-            return "Mobile number already registered!"
-        finally:
-            conn.close()
+        cursor.execute('''
+            INSERT INTO police (name, mobile, password, department, profile_image)
+            VALUES (?, ?, ?, ?, ?)
+        ''', (name, mobile, password, department, image_filename))
+        conn.commit()
+        conn.close()
+
+        return redirect(url_for('police_login'))
+
     return render_template('police_register.html')
+
 
 
 @app.route('/police/login', methods=['GET', 'POST'])
@@ -200,8 +213,8 @@ def police_dashboard():
     
     conn = get_db_connection()
     cursor = conn.cursor()
-    
-    # Retrieve police information
+
+    # Retrieve police information including profile image
     cursor.execute('SELECT * FROM police WHERE id = ?', (police_id,))
     police = cursor.fetchone()
 
@@ -210,8 +223,9 @@ def police_dashboard():
     complaints = cursor.fetchall()
 
     conn.close()
-    
+
     return render_template('police_dashboard.html', police=police, complaints=complaints)
+
 
 
 @app.route('/police/update/<int:complaint_id>', methods=['POST'])
@@ -248,6 +262,99 @@ def complaint_status(complaint_id):
     conn.close()
 
     return render_template('status.html', complaint=complaint)
+
+@app.route('/admin/register', methods=['GET', 'POST'])
+def admin_register():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+
+        conn = sqlite3.connect('database.db')
+        cursor = conn.cursor()
+
+        # Insert new admin into the database
+        cursor.execute('INSERT INTO admin (username, password) VALUES (?, ?)', (username, password))
+        conn.commit()
+        conn.close()
+
+        return redirect(url_for('admin_login'))
+
+    return render_template('admin_register.html')
+
+@app.route('/admin/login', methods=['GET', 'POST'])
+def admin_login():
+    if request.method == 'POST':
+        username = request.form.get('username')  # Use get to avoid KeyError
+        password = request.form.get('password')
+
+        conn = sqlite3.connect('database.db')
+        cursor = conn.cursor()
+
+        try:
+            # Check admin credentials
+            cursor.execute('SELECT * FROM admin WHERE username = ? AND password = ?', (username, password))
+            admin = cursor.fetchone()
+        except Exception as e:
+            return f"An error occurred: {e}"
+        finally:
+            conn.close()
+
+        if admin:
+            session['admin_id'] = admin[0]  # Store admin id in session
+            return redirect(url_for('admin_dashboard'))
+        else:
+            return "Invalid username or password"
+
+    return render_template('admin_login.html')
+
+
+
+@app.route('/admin/dashboard')
+def admin_dashboard():
+    # Get admin's name
+    admin_id = session.get('admin_id')
+    admin_name = ''
+    
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    # Fetch admin name based on admin_id
+    cursor.execute('SELECT username FROM admin WHERE id = ?', (admin_id,))
+    admin_data = cursor.fetchone()
+    if admin_data:
+        admin_name = admin_data[0]
+
+    # Fetch case counts by department
+    cursor.execute('''
+        SELECT department, COUNT(*) as count
+        FROM complaints
+        GROUP BY department
+    ''')
+    case_counts = cursor.fetchall()
+
+    # Fetch status counts
+    cursor.execute('''
+        SELECT status, COUNT(*) as count
+        FROM complaints
+        GROUP BY status
+    ''')
+    status_counts = cursor.fetchall()
+
+    conn.close()
+
+    # Pass admin_name, case_counts, and status_counts to the template
+    return render_template('admin_dashboard.html', 
+                           case_counts=case_counts, 
+                           status_counts=status_counts, 
+                           admin_name=admin_name)
+
+
+
+@app.route('/admin/logout')
+def admin_logout():
+    # Clear the session
+    session.pop('admin_id', None)  # Adjust based on how you store admin session data
+    return redirect(url_for('home'))  # Redirect to admin login page or any other page
 
 if __name__ == '__main__':
     app.run(debug=True)

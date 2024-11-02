@@ -56,6 +56,16 @@ def create_db():
             FOREIGN KEY (citizen_id) REFERENCES citizens(id)
         )
     ''')
+    
+    # Create admin table
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS admin (
+            id INTEGER PRIMARY KEY,
+            username TEXT UNIQUE NOT NULL,
+            password TEXT NOT NULL
+        )
+    ''')
+
 
     connection.commit()
     connection.close()
