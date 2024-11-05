@@ -105,8 +105,10 @@
 <body>
     <div class = "profile-actions">
         <h2>Welcome, {{ admin_name }}</h2>
-        <a href="{{ url_for('admin_update_profile') }}" class="button">Update Profile</a>
-        <a href="{{ url_for('admin_delete_profile') }}" class="button delete" onclick="return confirm('Are you sure you want to delete your profile? This action cannot be undone.');">Delete Profile</a>
+        <div style="display: flex; gap: 10px;"> <!-- Flexbox for spacing -->
+            <a href="{{ url_for('admin_update_profile') }}" class="button">Update Profile</a>
+            <a href="{{ url_for('admin_delete_profile') }}" class="button delete" onclick="return confirm('Are you sure you want to delete your profile? This action cannot be undone.');">Delete Profile</a>
+        </div>
     </div>
 
 <h2>Case Counts by Department</h2>
