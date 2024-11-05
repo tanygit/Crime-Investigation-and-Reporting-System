@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <title>Citizen Dashboard</title>
+    <title>Admin Dashboard</title>
     <style>
         /* Your existing styles */
         body {
@@ -46,22 +46,42 @@
             width: 100%; /* Full width */
             padding: 10px; /* Padding for better usability */
         }
-        button {
-            background-color: #2980b9;
-            color: white;
-            border: none;
-            cursor: pointer;
-            transition: background-color 0.3s;
+       /* Button Styles */
+       .button {
+            display: inline-block;
+            padding: 6px 12px; /* Padding for button */
+            background-color: #2980b9; /* Background color */
+            color: white; /* Text color */
+            text-decoration: none; /* No underline */
+            border: none; /* No border */
+            margin-right: 10px; /* Space between buttons */
+            text-align: center; /* Center text */
+            border-radius: 4px; /* Rounded corners */
+            cursor: pointer; /* Pointer cursor */
+            font-size: 14px; /* Font size */
+            transition: background-color 0.3s; /* Smooth background transition */
         }
-        button:hover {
+
+        .button:hover {
             background-color: #1a5276; /* Darker shade on hover */
         }
+
+        /* Special styling for delete link */
+        .button.delete {
+            background-color: #e74c3c; /* Red background for delete */
+        }
+
+        .button.delete:hover {
+            background-color: #c0392b; /* Darker red on hover */
+        }
+
         a {
             display: inline-block;
             margin-top: 20px;
             text-decoration: none;
             color: #2980b9;
         }
+
         a:hover {
             text-decoration: underline;
         }
@@ -83,7 +103,11 @@
     </style>
 </head>
 <body>
-    <h2>Welcome, {{ admin_name }}</h2>
+    <div class = "profile-actions">
+        <h2>Welcome, {{ admin_name }}</h2>
+        <a href="{{ url_for('admin_update_profile') }}" class="button">Update Profile</a>
+        <a href="{{ url_for('admin_delete_profile') }}" class="button delete" onclick="return confirm('Are you sure you want to delete your profile? This action cannot be undone.');">Delete Profile</a>
+    </div>
 
 <h2>Case Counts by Department</h2>
 <table>
@@ -113,8 +137,6 @@
     {% endfor %}
 </table>
 
-    
-    
     
 <a href="{{ url_for('admin_logout') }}">Logout</a>
 
