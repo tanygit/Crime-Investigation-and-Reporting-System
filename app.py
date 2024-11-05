@@ -186,12 +186,12 @@ def police_register():
 @app.route('/police/login', methods=['GET', 'POST'])
 def police_login():
     if request.method == 'POST':
-        mobile = request.form['mobile']
+        name = request.form.get('username')
         password = request.form['password']
 
         conn = get_db_connection()
         cursor = conn.cursor()
-        cursor.execute('SELECT * FROM police WHERE mobile = ? AND password = ?', (mobile, password))
+        cursor.execute('SELECT * FROM police WHERE name = ? AND password = ?', (name, password))
         police = cursor.fetchone()
         conn.close()
 
