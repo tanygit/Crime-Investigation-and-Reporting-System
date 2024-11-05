@@ -82,12 +82,12 @@ def submit_complaint():
 @app.route('/citizen/login', methods=['GET', 'POST'])
 def citizen_login():
     if request.method == 'POST':
-        mobile = request.form['mobile']
+        name = request.form.get('username')
         password = request.form['password']
         
         conn = get_db_connection()
         cursor = conn.cursor()
-        cursor.execute('SELECT * FROM citizens WHERE mobile = ? AND password = ?', (mobile, password))
+        cursor.execute('SELECT * FROM citizens WHERE name = ? AND password = ?', (name, password))
         citizen = cursor.fetchone()
         conn.close()
         
