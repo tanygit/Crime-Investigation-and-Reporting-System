@@ -521,6 +521,55 @@ def police_delete_profile():
     return redirect(url_for('home'))  # Redirect to the homepage after deletion
 
 
+@app.route('/admin/update_profile', methods=['GET', 'POST'])
+def admin_update_profile():
+    if 'admin_id' not in session:
+        return redirect(url_for('admin_login'))
+
+    admin_id = session['admin_id']
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    # Fetch the admin's current data
+    cursor.execute('SELECT * FROM admin WHERE id = ?', (admin_id,))
+    admin = cursor.fetchone()
+
+    if request.method == 'POST':
+        new_username = request.form.get('username')
+        new_password = request.form.get('password')  # Assuming admin can update their password
+
+        # Update the admin in the database
+        cursor.execute('''
+            UPDATE admin SET username = ?, password = ?
+            WHERE id = ?
+        ''', (new_username, new_password, admin_id))
+
+        conn.commit()
+        conn.close()
+        return redirect(url_for('admin_dashboard'))
+
+    conn.close()
+    return render_template('admin_update_profile.html', admin=admin)
+
+@app.route('/admin/delete_profile', methods=['GET','POST'])
+def admin_delete_profile():
+    if 'admin_id' not in session:
+        return redirect(url_for('admin_login'))  # Ensure the admin is logged in
+
+    admin_id = session['admin_id']
+    
+    # Connect to the database and delete the admin record
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('DELETE FROM admin WHERE id = ?', (admin_id,))
+    conn.commit()
+    conn.close()
+
+    # Clear the session and redirect to the home page
+    session.pop('admin_id', None)
+    return redirect(url_for('admin_login'))
+
+
 @app.route('/admin/logout')
 def admin_logout():
     # Clear the session
@@ -529,3 +578,9 @@ def admin_logout():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+try:
+    conn = get_db_connection()
+    # Perform database operations
+finally:
+    conn.close()  # Ensure the connection is always closed
