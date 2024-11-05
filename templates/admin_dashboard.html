@@ -5,7 +5,6 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <title>Admin Dashboard</title>
     <style>
-        /* Your existing styles */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -23,7 +22,7 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 30px; /* Space between table and other elements */
+            margin-bottom: 30px;
         }
         th, td {
             border: 1px solid #ddd;
@@ -35,75 +34,50 @@
             color: white;
         }
         tr:hover {
-            background-color: #f1f1f1; /* Highlight row on hover */
+            background-color: #f1f1f1;
         }
-        form {
-            margin-top: 20px; /* Space above the form */
+        /* Updated styling for the profile actions */
+        .profile-actions {
+            margin-bottom: 40px; /* Increased space below the actions */
         }
-        input, textarea, button, select {
-            display: block; /* Each element on a new line */
-            margin: 10px 0; /* Space between elements */
-            width: 100%; /* Full width */
-            padding: 10px; /* Padding for better usability */
+        .profile-actions h2 {
+            margin-bottom: 20px; /* Space between welcome text and buttons */
         }
-       /* Button Styles */
-       .button {
+        .button {
             display: inline-block;
-            padding: 6px 12px; /* Padding for button */
-            background-color: #2980b9; /* Background color */
-            color: white; /* Text color */
-            text-decoration: none; /* No underline */
-            border: none; /* No border */
+            padding: 10px 20px; /* Increased padding for better usability */
+            background-color: #2980b9;
+            color: white;
+            text-decoration: none;
+            border: none;
             margin-right: 10px; /* Space between buttons */
-            text-align: center; /* Center text */
-            border-radius: 4px; /* Rounded corners */
-            cursor: pointer; /* Pointer cursor */
-            font-size: 14px; /* Font size */
-            transition: background-color 0.3s; /* Smooth background transition */
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
         }
-
         .button:hover {
-            background-color: #1a5276; /* Darker shade on hover */
+            background-color: #1a5276;
         }
-
-        /* Special styling for delete link */
         .button.delete {
             background-color: #e74c3c; /* Red background for delete */
         }
-
         .button.delete:hover {
             background-color: #c0392b; /* Darker red on hover */
         }
-
         a {
             display: inline-block;
             margin-top: 20px;
             text-decoration: none;
             color: #2980b9;
         }
-
         a:hover {
             text-decoration: underline;
         }
-        /*.profile-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh; 
-        }*/
-        
-        .profile-image {
-            width: 150px; /* Set your desired width */
-            height: 150px; /* Set your desired height */
-            border-radius: 50%; /* This makes the image round */
-            object-fit: cover; /* Ensures the image covers the area without distortion */
-            border: 2px solid #ccc; /* Optional: add a border */
-        }
-
     </style>
 </head>
 <body>
-    <div class = "profile-actions">
+    <div class="profile-actions">
         <h2>Welcome, {{ admin_name }}</h2>
         <div style="display: flex; gap: 10px;"> <!-- Flexbox for spacing -->
             <a href="{{ url_for('admin_update_profile') }}" class="button">Update Profile</a>
@@ -111,36 +85,34 @@
         </div>
     </div>
 
-<h2>Case Counts by Department</h2>
-<table>
-    <tr>
-        <th>Department</th>
-        <th>Count</th>
-    </tr>
-    {% for department, count in case_counts %}
-    <tr>
-        <td>{{ department }}</td>
-        <td>{{ count }}</td>
-    </tr>
-    {% endfor %}
-</table>
+    <h2>Case Counts by Department</h2>
+    <table>
+        <tr>
+            <th>Department</th>
+            <th>Count</th>
+        </tr>
+        {% for department, count in case_counts %}
+        <tr>
+            <td>{{ department }}</td>
+            <td>{{ count }}</td>
+        </tr>
+        {% endfor %}
+    </table>
 
-<h2>Status Counts</h2>
-<table>
-    <tr>
-        <th>Status</th>
-        <th>Count</th>
-    </tr>
-    {% for status, count in status_counts %}
-    <tr>
-        <td>{{ status }}</td>
-        <td>{{ count }}</td>
-    </tr>
-    {% endfor %}
-</table>
+    <h2>Status Counts</h2>
+    <table>
+        <tr>
+            <th>Status</th>
+            <th>Count</th>
+        </tr>
+        {% for status, count in status_counts %}
+        <tr>
+            <td>{{ status }}</td>
+            <td>{{ count }}</td>
+        </tr>
+        {% endfor %}
+    </table>
 
-    
-<a href="{{ url_for('admin_logout') }}">Logout</a>
-
+    <a href="{{ url_for('admin_logout') }}">Logout</a>
 </body>
 </html>
