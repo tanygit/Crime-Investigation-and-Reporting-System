@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    
     <title>Crime Report Management System</title>
     <style>
         body {
@@ -48,6 +50,7 @@
             height: 400px; /* Fixed height */
             border-radius: 5px; /* Rounded corners */
             margin: 20px 0; /* Margin for spacing */
+            width: 100%;
         }
 
         footer {
@@ -58,30 +61,83 @@
             position: relative; /* Relative positioning */
             width: 100%; /* Full width */
             bottom: 0; /* Aligns footer at the bottom of the page */
+        
         }
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        .links{
+            position:sticky;
+            left: 200px;
+          }
     </style>
 </head>
 <body>
     <div class="navbar">
-        <a href="/">Home</a>
-        <a href="/citizen/register">Citizen Register</a>
-        <a href="/citizen/login">Citizen Login</a>
-        <a href="/police/register">Police Register</a>
-        <a href="/police/login">Police Login</a>
-        <a href="/admin/register">Admin Register</a>
-        <a href="/admin/login">Admin Login</a>
+        <!-- <div class="links"> -->
+            <a href="/">Home</a>
+            <a href="#about">About Us</a>
+            <div class="dropdown">
+                <a>Register</a>
+                <div class="dropdown-content">
+                    <a href="/citizen/register">Citizen Register</a>
+                    <a href="/police/register">Police Register</a>
+                    <a href="/admin/register">Admin Register</a>
+                </div>
+            </div>
+             
+            <div class="dropdown">
+                <a>Login</a>
+                <div class="dropdown-content">
+                    <a href="/citizen/login">Citizen Login</a>
+                    <a href="/police/login">Police Login</a>
+                    <a href="/admin/login">Admin Login</a>
+                </div>
+            </div>
+        <!-- </div> -->
     </div>
-    <h2>Welcome to the Crime Report Management System</h2>
-    <!-- Using the uploaded image -->
-    <img src="{{ url_for('static', filename='uploads/crime.jpg')}}" alt="Crime Management">
+    <div class="w3-container">
+        <div class="w3-display-container w3-text-black">
+            <img src="{{ url_for('static', filename='uploads/crime2.jpg')}}" alt="Crime Management" >
+            <div class="w3-display-position w3-padding" style="top:140px;left:270px"><h2 style="color: #f1f1f1;">Welcome to the Crime Report Management System</h2>
+            </div>
+        <div>
+    </div>
+    <div class="w3-container " id="about">
+        <div class="w3-content w3-light-grey" style="max-width:700px">
+            <h5 class="w3-center w3-padding-64"><span class="w3-tag w3-wide">ABOUT US</span></h5>
+            <p>Welcome to our Crime Reporting System, your secure and reliable way to report incidents, seek assistance, and connect with local authorities—all from the comfort and safety of your home. We understand the importance of feeling protected and heard, especially in times of distress, which is why we are committed to providing an accessible platform that empowers citizens to reach out confidently and securely.</p>
+            <p>Our goal is to make it easier for you to report crimes, share concerns, and stay informed, without the need for physical visits to the police station. We work closely with local law enforcement to ensure that your reports are handled with utmost respect, confidentiality, and urgency, fostering a safer community for everyone.</p>
+            <div class="w3-panel w3-leftbar w3-light-grey">
+                <p><i>"Your safety and peace of mind are at the heart of everything we do. Together, we can build a connected, resilient community where everyone feels protected and supported."</i></p>
+                <p>Crime Report System Team</p>
+            </div>
+            <h5 class="w3-center w3-padding-32"></h5>
+        </div>
+    </div>
     
-    <p>
-        This system allows citizens to report crimes and track their complaints while enabling police personnel to manage and respond to these reports efficiently.
-    </p>
-    <p>
-        Please register or log in to get started.
-    </p>
-
     <footer>
         <p>Made with &hearts; by DBMS Team</p>
     </footer>
