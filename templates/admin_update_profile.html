@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+    <title>Update Admin Profile</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background-color: #f4f4f4;
+      }
+      h2 {
+        color: #2c3e50;
+        margin-bottom: 20px;
+      }
+      input,
+      button {
+        display: block;
+        margin: 10px 0;
+        width: 100%;
+        padding: 10px;
+      }
+      button {
+        background-color: #2980b9;
+        color: white;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+      button:hover {
+        background-color: #1a5276;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Update Admin Profile</h2>
+    <form method="POST">
+      <input
+        type="text"
+        name="username"
+        placeholder="Username"
+        value="{{ admin.username }}"
+        required
+      />
+      <input
+        type="password"
+        name="password"
+        placeholder="New Password"
+        required
+      />
+      <button type="submit">Update Profile</button>
+    </form>
+    <a href="{{ url_for('admin_dashboard') }}">Cancel</a>
+  </body>
+</html>
