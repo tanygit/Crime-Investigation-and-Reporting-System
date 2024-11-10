@@ -1,3 +1,4 @@
+# create_db.py
 import sqlite3
 
 def create_db():
@@ -5,46 +6,29 @@ def create_db():
     cursor = connection.cursor()
 
     # Create citizens table
-    # cursor.execute('''
-    #     CREATE TABLE IF NOT EXISTS citizens (
-    #         id INTEGER PRIMARY KEY,
-    #         name TEXT NOT NULL,
-    #         mobile TEXT UNIQUE NOT NULL,
-    #         password TEXT NOT NULL
-    #     )
-    # ''')
     cursor.execute('''
-    CREATE TABLE IF NOT EXISTS citizens (
-        id INTEGER PRIMARY KEY,
-        name TEXT NOT NULL,
-        mobile TEXT UNIQUE NOT NULL,
-        password TEXT NOT NULL,
-        profile_image TEXT  -- Add this line for profile picture
-    )
-''')
+        CREATE TABLE IF NOT EXISTS citizens (
+            id INTEGER PRIMARY KEY,
+            name TEXT NOT NULL,
+            mobile TEXT UNIQUE NOT NULL,
+            password TEXT NOT NULL,
+            profile_image TEXT
+        )
+    ''')
 
     # Create police table
-    # cursor.execute('''
-    #     CREATE TABLE IF NOT EXISTS police (
-    #         id INTEGER PRIMARY KEY,
-    #         name TEXT NOT NULL,
-    #         mobile TEXT UNIQUE NOT NULL,
-    #         password TEXT NOT NULL,
-    #         department TEXT NOT NULL
-    #     )
-    # ''')
     cursor.execute('''
-    CREATE TABLE IF NOT EXISTS police (
-        id INTEGER PRIMARY KEY,
-        name TEXT NOT NULL,
-        mobile TEXT UNIQUE NOT NULL,
-        password TEXT NOT NULL,
-        department TEXT NOT NULL,
-        profile_image TEXT  -- Add this line for profile picture
-    )
-''')
+        CREATE TABLE IF NOT EXISTS police (
+            id INTEGER PRIMARY KEY,
+            name TEXT NOT NULL,
+            mobile TEXT UNIQUE NOT NULL,
+            password TEXT NOT NULL,
+            department TEXT NOT NULL,
+            profile_image TEXT
+        )
+    ''')
 
-    # Create complaints table
+    # Create complaints table with police_id foreign key
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS complaints (
             id INTEGER PRIMARY KEY,
@@ -53,10 +37,12 @@ def create_db():
             status TEXT DEFAULT 'Pending',
             image TEXT,
             department TEXT NOT NULL,
-            FOREIGN KEY (citizen_id) REFERENCES citizens(id)
+            police_id INTEGER,  -- Add this line to store assigned police officer ID
+            FOREIGN KEY (citizen_id) REFERENCES citizens(id),
+            FOREIGN KEY (police_id) REFERENCES police(id)
         )
     ''')
-    
+
     # Create admin table
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS admin (
@@ -65,7 +51,6 @@ def create_db():
             password TEXT NOT NULL
         )
     ''')
-
 
     connection.commit()
     connection.close()

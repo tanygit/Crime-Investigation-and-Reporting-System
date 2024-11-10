@@ -1,208 +1,255 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <head>
+    <meta charset="UTF-8" />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
     <title>Citizen Dashboard</title>
     <style>
-        /* Your existing styles */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f4f4f4;
-        }
-        h2 {
-            color: #2c3e50;
-            margin-bottom: 20px;
-        }
-        h3 {
-            color: #2980b9;
-            margin-top: 30px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 30px; /* Space between table and other elements */
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-        th {
-            background-color: #2980b9;
-            color: white;
-        }
-        tr:hover {
-           background-color: #f1f1f1; /* Highlight row on hover */
-        }
-        form {
-            margin-top: 20px; /* Space above the form */
-        }
-        input, textarea, button, select {
-            display: block; /* Each element on a new line */
-            margin: 10px 0; /* Space between elements */
-            width: 100%; /* Full width */
-            padding: 10px; /* Padding for better usability */
-        }
+      /* Your existing styles */
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background-color: #f4f4f4;
+      }
+      h2 {
+        color: #2c3e50;
+        margin-bottom: 20px;
+      }
+      h3 {
+        color: #2980b9;
+        margin-top: 30px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 30px; /* Space between table and other elements */
+      }
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+      }
+      th {
+        background-color: #2980b9;
+        color: white;
+      }
+      tr:hover {
+        background-color: #f1f1f1; /* Highlight row on hover */
+      }
+      form {
+        margin-top: 20px; /* Space above the form */
+      }
+      input,
+      textarea,
+      button,
+      select {
+        display: block; /* Each element on a new line */
+        margin: 10px 0; /* Space between elements */
+        width: 100%; /* Full width */
+        padding: 10px; /* Padding for better usability */
+      }
 
-        /* Button Styles */
-        .button {
-            display: inline-block;
-            padding: 6px 12px; /* Padding for button */
-            background-color: #2980b9; /* Background color */
-            color: white; /* Text color */
-            text-decoration: none; /* No underline */
-            border: none; /* No border */
-            margin-right: 10px; /* Space between buttons */
-            text-align: center; /* Center text */
-            border-radius: 4px; /* Rounded corners */
-            cursor: pointer; /* Pointer cursor */
-            font-size: 14px; /* Font size */
-            transition: background-color 0.3s; /* Smooth background transition */
-        }
+      /* Button Styles */
+      .button {
+        display: inline-block;
+        padding: 6px 12px; /* Padding for button */
+        background-color: #2980b9; /* Background color */
+        color: white; /* Text color */
+        text-decoration: none; /* No underline */
+        border: none; /* No border */
+        margin-right: 10px; /* Space between buttons */
+        text-align: center; /* Center text */
+        border-radius: 4px; /* Rounded corners */
+        cursor: pointer; /* Pointer cursor */
+        font-size: 14px; /* Font size */
+        transition: background-color 0.3s; /* Smooth background transition */
+      }
 
-        .button:hover {
-            background-color: #1a5276; /* Darker shade on hover */
-        }
+      .button:hover {
+        background-color: #1a5276; /* Darker shade on hover */
+      }
 
-        /* Special styling for delete link */
-        .button.delete {
-            background-color: #e74c3c; /* Red background for delete */
-        }
+      /* Special styling for delete link */
+      .button.delete {
+        background-color: #e74c3c; /* Red background for delete */
+      }
 
-        .button.delete:hover {
-            background-color: #c0392b; /* Darker red on hover */
-        }
+      .button.delete:hover {
+        background-color: #c0392b; /* Darker red on hover */
+      }
 
-        .profile-container {
-            display: flex; /* Use flexbox for horizontal alignment */
-            align-items: center; /* Center align items vertically */
-            gap: 15px; /* Space between the image and welcome message */
-            margin-bottom: 20px; /* Space below the profile container */
-        }
+      .profile-container {
+        display: flex; /* Use flexbox for horizontal alignment */
+        align-items: center; /* Center align items vertically */
+        gap: 15px; /* Space between the image and welcome message */
+        margin-bottom: 20px; /* Space below the profile container */
+      }
 
-        .profile-image {
-            width: 150px; /* Set your desired width */
-            height: 150px; /* Set your desired height */
-            border-radius: 50%; /* This makes the image round */
-            object-fit: cover; /* Ensures the image covers the area without distortion */
-            border: 2px solid #ccc; /* Optional: add a border */
-        }
+      .profile-image {
+        width: 150px; /* Set your desired width */
+        height: 150px; /* Set your desired height */
+        border-radius: 50%; /* This makes the image round */
+        object-fit: cover; /* Ensures the image covers the area without distortion */
+        border: 2px solid #ccc; /* Optional: add a border */
+      }
 
-        /* Flexbox for button container */
-        .button-container {
-            display: flex; /* Use flexbox */
-            align-items: center; /* Center align items */
-            gap: 10px; /* Space between buttons */
-        }
+      /* Flexbox for button container */
+      .button-container {
+        display: flex; /* Use flexbox */
+        align-items: center; /* Center align items */
+        gap: 10px; /* Space between buttons */
+      }
 
-        h1 {
-            text-align: center;
-        }
+      h1 {
+        text-align: center;
+      }
     </style>
     <script>
-        // JavaScript function to update department based on crime type
-        function updateDepartment() {
-            const crimeType = document.getElementById("crime_type").value;
-            const departmentDropdown = document.getElementById("department");
-            departmentDropdown.innerHTML = ""; // Clear existing options
+      // JavaScript function to update department based on crime type
+      function updateDepartment() {
+        const crimeType = document.getElementById("crime_type").value;
+        const departmentDropdown = document.getElementById("department");
+        departmentDropdown.innerHTML = ""; // Clear existing options
 
-            // Define department options based on selected crime type
-            const crimeToDepartment = {
-                "Robbery": "Crime",
-                "Assault": "Crime",
-                "Fire": "Fire",
-                "Medical Emergency": "Medical",
-                "Accident": "Traffic",
-                // Add more mappings as needed
-            };
+        // Define department options based on selected crime type
+        const crimeToDepartment = {
+          Robbery: "Crime",
+          Assault: "Crime",
+          Fire: "Fire",
+          "Medical Emergency": "Medical",
+          Accident: "Traffic",
+          // Add more mappings as needed
+        };
 
-            if (crimeType in crimeToDepartment) {
-                const department = crimeToDepartment[crimeType];
-                const option = document.createElement("option");
-                option.value = department;
-                option.text = department;
-                departmentDropdown.add(option);
-            }
+        if (crimeType in crimeToDepartment) {
+          const department = crimeToDepartment[crimeType];
+          const option = document.createElement("option");
+          option.value = department;
+          option.text = department;
+          departmentDropdown.add(option);
         }
+      }
     </script>
-</head>
-<body>
+  </head>
+  <body>
     <h1>Citizen Dashboard</h1>
     <div class="profile-container">
-        {% if citizen['profile_image'] %}
-            <img src="{{ url_for('static', filename='uploads/' + citizen['profile_image']) }}" alt="Profile Picture" class="profile-image">
-        {% else %}
-            <p>No profile picture available.</p>
-        {% endif %}
-        
-        <!-- Profile Actions moved here -->
-    <div class="profile-actions">
-        <h2>Welcome, {{ citizen['name'] }}</h2> <!-- Moved next to image -->
-        <div class="button-container">
-            <a href="/citizen/update_profile" class="button">Update Profile</a>
-            <a href="/citizen/delete_profile" class="button delete" onclick="return confirm('Are you sure you want to delete your profile? This action cannot be undone.');">Delete Profile</a>
-        </div>
-    </div>
-    </div>
+      {% if citizen['profile_image'] %}
+      <img
+        src="{{ url_for('static', filename='uploads/' + citizen['profile_image']) }}"
+        alt="Profile Picture"
+        class="profile-image"
+      />
+      {% else %}
+      <p>No profile picture available.</p>
+      {% endif %}
 
+      <!-- Profile Actions moved here -->
+      <div class="profile-actions">
+        <h2>Welcome, {{ citizen['name'] }}</h2>
+        <!-- Moved next to image -->
+        <div class="button-container">
+          <a href="/citizen/update_profile" class="button">Update Profile</a>
+          <a
+            href="/citizen/delete_profile"
+            class="button delete"
+            onclick="return confirm('Are you sure you want to delete your profile? This action cannot be undone.');"
+            >Delete Profile</a
+          >
+        </div>
+      </div>
+    </div>
 
     <h3>Your Complaints</h3>
     <table>
-        <thead>
-            <tr>
-                <th>Description</th>
-                <th>Status</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for complaint in complaints %}
-                <tr>
-                    <td>{{ complaint['description'] }}</td>
-                    <td>{{ complaint['status'] }}</td>
-                    <td>
-                        <div class="button-container">
-                            <a href="/complaint/status/{{ complaint['id'] }}" class="button">View Status</a>
-                            <a href="/citizen/update_complaint/{{ complaint['id'] }}" class="button">Update</a>
-                            <a href="/complaint/delete/{{ complaint['id'] }}" class="button delete" onclick="return confirm('Are you sure you want to delete this complaint?');">Delete</a>
-                        </div>
-                    </td>
-                </tr>
-            {% endfor %}
-        </tbody>
+      <thead>
+        <tr>
+          <th>Description</th>
+          <th>Status</th>
+          <th>Action</th>
+          <th>Police</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for complaint in complaints %}
+        <tr>
+          <td>{{ complaint['description'] }}</td>
+          <td>{{ complaint['status'] }}</td>
+          <td>
+            <div class="button-container">
+              <a href="/complaint/status/{{ complaint['id'] }}" class="button"
+                >View Status</a
+              >
+              <a
+                href="/citizen/update_complaint/{{ complaint['id'] }}"
+                class="button"
+                >Update</a
+              >
+              <a
+                href="/complaint/delete/{{ complaint['id'] }}"
+                class="button delete"
+                onclick="return confirm('Are you sure you want to delete this complaint?');"
+                >Delete</a
+              >
+            </div>
+          </td>
+          <td>
+            {% if complaint['police_name'] %} {{ complaint['police_name'] }} {%
+            else %} Not Assigned {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
     </table>
-    
+
     <div class="container">
-        <h3>File a Complaint</h3>
-        <form method="POST" action="/citizen/submit_complaint" enctype="multipart/form-data">
-            <input type="text" name="mobile" placeholder="Mobile Number" required>
-            <input type="text" name="location" placeholder="Location" required>
-            
-            <!-- Crime Type Dropdown -->
-            <select id="crime_type" name="crime_type" onchange="updateDepartment()" required>
-                <option value="">Select Crime Type</option>
-                <option value="Robbery">Robbery</option>
-                <option value="Assault">Assault</option>
-                <option value="Fire">Fire</option>
-                <option value="Medical Emergency">Medical Emergency</option>
-                <option value="Accident">Accident</option>
-                <!-- Add other crime types as needed -->
-            </select>
-            
-            <!-- Department Dropdown -->
-            <select id="department" name="department" required>
-                <option value="">Select Department</option>
-            </select>
-            
-            <input type="text" name="description" placeholder="Description" required>
-            <input type="file" name="image">
-            <button type="submit" class="button">File Complaint</button>
-        </form>
+      <h3>File a Complaint</h3>
+      <form
+        method="POST"
+        action="/citizen/submit_complaint"
+        enctype="multipart/form-data"
+      >
+        <input type="text" name="mobile" placeholder="Mobile Number" required />
+        <input type="text" name="location" placeholder="Location" required />
+
+        <!-- Crime Type Dropdown -->
+        <select
+          id="crime_type"
+          name="crime_type"
+          onchange="updateDepartment()"
+          required
+        >
+          <option value="">Select Crime Type</option>
+          <option value="Robbery">Robbery</option>
+          <option value="Assault">Assault</option>
+          <option value="Fire">Fire</option>
+          <option value="Medical Emergency">Medical Emergency</option>
+          <option value="Accident">Accident</option>
+          <!-- Add other crime types as needed -->
+        </select>
+
+        <!-- Department Dropdown -->
+        <select id="department" name="department" required>
+          <option value="">Select Department</option>
+        </select>
+
+        <input
+          type="text"
+          name="description"
+          placeholder="Description"
+          required
+        />
+        <input type="file" name="image" />
+        <button type="submit" class="button">File Complaint</button>
+      </form>
     </div>
 
-    <a href="/citizen/logout" class="button" style="width: auto;">Logout</a> <!-- Added class for consistency -->
-</body>
+    <a href="/citizen/logout" class="button" style="width: auto">Logout</a>
+    <!-- Added class for consistency -->
+  </body>
 </html>

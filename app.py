@@ -97,7 +97,7 @@ def citizen_login():
         else:
             return "Invalid mobile or password!"
     return render_template('citizen_login.html')
-
+# app.py
 @app.route('/citizen/dashboard')
 def citizen_dashboard():
     if 'id' not in session:
@@ -105,14 +105,24 @@ def citizen_dashboard():
 
     conn = get_db_connection()
     cursor = conn.cursor()
+
+    # Get citizen information
     cursor.execute('SELECT * FROM citizens WHERE id = ?', (session['id'],))
     citizen = cursor.fetchone()
     
-    cursor.execute('SELECT * FROM complaints WHERE citizen_id = ?', (citizen['id'],))
+    # Get complaints and join with police table to get police officer name
+    cursor.execute('''
+        SELECT complaints.*, police.name AS police_name
+        FROM complaints
+        LEFT JOIN police ON complaints.police_id = police.id
+        WHERE complaints.citizen_id = ?
+    ''', (citizen['id'],))
+    
     complaints = cursor.fetchall()
     conn.close()
 
     return render_template('citizen_dashboard.html', citizen=citizen, complaints=complaints)
+
 
 @app.route('/citizen/complaint', methods=['GET', 'POST'])
 def citizen_complaint():
@@ -228,20 +238,31 @@ def police_dashboard():
 
 
 
+# app.py
 @app.route('/police/update/<int:complaint_id>', methods=['POST'])
 def police_update(complaint_id):
     if 'police_id' not in session:
         return redirect(url_for('police_login'))
 
     status = request.form['status']
-    
+    police_id = session['police_id']  # Get the logged-in police officer's ID
+
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute('UPDATE complaints SET status = ? WHERE id = ?', (status, complaint_id))
+
+    if status == 'In Progress':
+        # Update both the status and assign the police officer to the complaint
+        cursor.execute('UPDATE complaints SET status = ?, police_id = ? WHERE id = ?', 
+                       (status, police_id, complaint_id))
+    else:
+        # Just update the status
+        cursor.execute('UPDATE complaints SET status = ? WHERE id = ?', (status, complaint_id))
+
     conn.commit()
     conn.close()
     
     return redirect(url_for('police_dashboard'))
+
 
 @app.route('/police/logout')
 def police_logout():
